@@ -1,15 +1,14 @@
 // PID motor position control.
 // Thanks to Brett Beauregard for his nice PID library http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/
 
-#include <PinChangeInt.h>
+#include <SoftwareSerial.h>
+#include "RoboClaw.h"
+
 #include <Wire.h>
 #include <PID_v1.h>
-#define encodPinA1      2                       // Quadrature encoder A pin
-#define encodPinB1      8                       // Quadrature encoder B pin
-#define M1              9                       // PWM outputs to L298N H-Bridge motor driver module
-#define M2              10
 
 #define address 0x80
+
 SoftwareSerial serial(13,12);
 RoboClaw rc(&serial, 10000);
 
@@ -37,8 +36,8 @@ void loop() {
   int timeChange = (now - lastTime);
   if(timeChange>=500)
   {
-    encoderPos1 = roboclaw.readEncM1(address, &status1, &valid1)
-    encoderPos2 = roboclaw.readEncM2(address, &status2, &valid2)
+    encoderPos1 = rc.ReadEncM1(address, &status1, &valid1);
+    encoderPos2 = rc.ReadEncM2(address, &status2, &valid2);
     input1 = (360.0*1000*(encoderPos1-last_pos1)) /(1856.0*(now - lastTime));
     input2 = (360.0*1000*(encoderPos2-last_pos2)) /(1856.0*(now - lastTime));
 
